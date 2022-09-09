@@ -264,7 +264,7 @@ def scrape(request):
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Export Data')]"))).click()
             sleep(5)
             driver.quit()
-            with open(BASE_DIR + "/selenium/Income Statement_Annual_As Originally Reported.xls", 'rb') as file:
+            with open(BASE_DIR + "/selenium/Income Statement_Annual_As Originally Reported.xls", 'rb',encoding='utf-16') as file:
                 response = HttpResponse(file, content_type='text/csv')
                 response['Content-Disposition'] = 'attachment; filename=stockhistory.csv'  
                 return response
