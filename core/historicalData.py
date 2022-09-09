@@ -256,8 +256,8 @@ def scrape(request):
         chromeOptions.add_argument("--headless")
         chromeOptions.add_argument('--no-sandbox')   
         chromeOptions.add_argument("--disable-dev-shm-usage") 
-        # driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH, chrome_options=chromeOptions)
-        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chromeOptions)
+        driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH, chrome_options=chromeOptions)
+        # driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chromeOptions)
         driver.get(f"https://www.morningstar.com/stocks/{market_value}/{ticker_value}/financials")
         if type_value == "is":
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(., 'Expand Detail View')]"))).click()
@@ -265,14 +265,17 @@ def scrape(request):
             sleep(5)
             driver.quit()
             with open(BASE_DIR + "/selenium/Income Statement_Annual_As Originally Reported.xls", 'rb') as file:
-                df = pd.read_excel (BASE_DIR + "/selenium/Income Statement_Annual_As Originally Reported.xls")
-                df.replace(',','', regex=True, inplace=True)
-                df.to_json ('jsonfile.json', orient='records')
-                a_file = open("jsonfile.json", "r")
-                a_json = json.load(a_file)
-                pretty_json = json.dumps(a_json).replace("null", '"0"').replace(" ","")
-                a_file.close()
-            return HttpResponse(pretty_json, content_type='text/json')
+                response = HttpResponse(file, content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename=stockhistory.csv'  
+                return response
+            #     df = pd.read_excel (BASE_DIR + "/selenium/Income Statement_Annual_As Originally Reported.xls")
+            #     df.replace(',','', regex=True, inplace=True)
+            #     df.to_json ('jsonfile.json', orient='records')
+            #     a_file = open("jsonfile.json", "r")
+            #     a_json = json.load(a_file)
+            #     pretty_json = json.dumps(a_json).replace("null", '"0"').replace(" ","")
+            #     a_file.close()
+            # return HttpResponse(pretty_json, content_type='text/json')
         elif type_value == "bs":
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Balance Sheet')]"))).click()
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(., 'Expand Detail View')]"))).click()
@@ -280,14 +283,19 @@ def scrape(request):
             sleep(5)
             driver.quit()
             with open(BASE_DIR + "/selenium/Balance Sheet_Annual_As Originally Reported.xls", 'rb') as file:
-                df = pd.read_excel (BASE_DIR + "/selenium/Balance Sheet_Annual_As Originally Reported.xls")
-                df.replace(',','', regex=True, inplace=True)
-                df.to_json ('jsonfile.json', orient='records')
-                a_file = open("jsonfile.json", "r")
-                a_json = json.load(a_file)
-                pretty_json = json.dumps(a_json).replace("null", '"0"').replace(" ","")
-                a_file.close()
-            return HttpResponse(pretty_json, content_type='text/json')
+                response = HttpResponse(file, content_type='text/csv')
+                response['Content-Disposition'] = 'attachment; filename=stockhistory.csv'  
+
+                
+                return response
+                # df = pd.read_excel (BASE_DIR + "/selenium/Balance Sheet_Annual_As Originally Reported.xls")
+            #     df.replace(',','', regex=True, inplace=True)
+            #     df.to_json ('jsonfile.json', orient='records')
+            #     a_file = open("jsonfile.json", "r")
+            #     a_json = json.load(a_file)
+            #     pretty_json = json.dumps(a_json).replace("null", '"0"').replace(" ","")
+            #     a_file.close()
+            # return HttpResponse(pretty_json, content_type='text/json')
         elif type_value == "cf":
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//button[contains(., 'Cash Flow')]"))).click()
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(., 'Expand Detail View')]"))).click()
@@ -295,14 +303,22 @@ def scrape(request):
             sleep(5)
             driver.quit()
         with open(BASE_DIR + "/selenium/Cash Flow_Annual_As Originally Reported.xls", 'rb') as file:
-            df = pd.read_excel (BASE_DIR + "/selenium/Cash Flow_Annual_As Originally Reported.xls")
-            df.replace(',','', regex=True, inplace=True)
-            df.to_json ('jsonfile.json', orient='records')
-            a_file = open("jsonfile.json", "r")
-            a_json = json.load(a_file)
-            pretty_json = json.dumps(a_json).replace("null", '"0"').replace(" ","")
-            a_file.close()
-            return HttpResponse(pretty_json, content_type='text/json')
+            # df = pd.read_excel (BASE_DIR + "/selenium/Cash Flow_Annual_As Originally Reported.xls")
+            # with open('BASE_DIR + "/selenium/Cash Flow_Annual_As Originally Reported.xls"') as myfile:
+            response = HttpResponse(file, content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename=stockhistory.csv'   
+            return response
+            # df.replace(',','', regex=True, inplace=True)
+            # df.to_json ('jsonfile.json', orient='records')
+            # a_file = open("jsonfile.json", "r")
+            # a_json = json.load(a_file)
+            # pretty_json = json.dumps(a_json).replace("null", '"0"').replace(" ","")
+            # a_file.close()
+            # return HttpResponse(pretty_json, content_type='text/json')
+
+            #  dfs = (pd.read_csv(day + '.csv', error_bad_lines=False) for day in days)
+            # pd.concat(dfs).to_csv('stock_history.csv')
+        
 
 
 def get_key_ratio(ticker,market):
