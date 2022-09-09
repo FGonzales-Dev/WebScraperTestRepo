@@ -256,8 +256,8 @@ def scrape(request):
         chromeOptions.add_argument("--headless")
         chromeOptions.add_argument('--no-sandbox')   
         chromeOptions.add_argument("--disable-dev-shm-usage") 
-        driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH, chrome_options=chromeOptions)
-        # driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chromeOptions)
+        # driver = webdriver.Chrome(executable_path=CHROME_DRIVER_PATH, chrome_options=chromeOptions)
+        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chromeOptions)
         driver.get(f"https://www.morningstar.com/stocks/{market_value}/{ticker_value}/financials")
         if type_value == "is":
             WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.XPATH, "//a[contains(., 'Expand Detail View')]"))).click()
